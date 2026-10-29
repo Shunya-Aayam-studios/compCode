@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import React, { useState, useMemo } from 'react';
-import { useApp } from '@/context/AppContext';
-import { Problem, Difficulty, ProblemStatus } from '@/types';
-import { DIFFICULTY_CONFIG, STATUS_CONFIG, cn } from '@/lib/utils';
-import { FrequencyHeatMeter } from '@/components/FrequencyHeatMeter';
-import { CrossCompanyPopover } from '@/components/CrossCompanyPopover';
+import React, { useState, useMemo } from "react";
+import { useApp } from "@/context/AppContext";
+import { Problem, Difficulty, ProblemStatus } from "@/types";
+import { DIFFICULTY_CONFIG, STATUS_CONFIG, cn } from "@/lib/utils";
+import { FrequencyHeatMeter } from "@/components/FrequencyHeatMeter";
+import { CrossCompanyPopover } from "@/components/CrossCompanyPopover";
 import {
   CheckCircle2,
   CircleDot,
@@ -23,10 +23,15 @@ import {
   Eye,
   Shuffle,
   Inbox,
-} from 'lucide-react';
+} from "lucide-react";
 
-type SortColumn = 'frequency' | 'acceptanceRate' | 'difficulty' | 'status' | 'title';
-type SortDirection = 'asc' | 'desc';
+type SortColumn =
+  | "frequency"
+  | "acceptanceRate"
+  | "difficulty"
+  | "status"
+  | "title";
+type SortDirection = "asc" | "desc";
 
 export const ProblemTable: React.FC = () => {
   const {
@@ -47,8 +52,8 @@ export const ProblemTable: React.FC = () => {
   } = useApp();
 
   // Sorting
-  const [sortColumn, setSortColumn] = useState<SortColumn>('frequency');
-  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
+  const [sortColumn, setSortColumn] = useState<SortColumn>("frequency");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
 
   // Pagination
   const [pageSize, setPageSize] = useState<number>(50);
@@ -73,7 +78,7 @@ export const ProblemTable: React.FC = () => {
     if (!activeCompanyData) return [];
 
     // High Yield Sprint Preset: Combine 30 Days and 3 Months
-    if (presetFilter === 'high-yield') {
+    if (presetFilter === "high-yield") {
       const p30 = activeCompanyData.problems.thirtyDays || [];
       const p3m = activeCompanyData.problems.threeMonths || [];
       const map = new Map<string, Problem>();
@@ -93,70 +98,71 @@ export const ProblemTable: React.FC = () => {
     let list = [...baseProblems];
 
     // Preset filters
-    if (presetFilter === 'high-yield') {
+    if (presetFilter === "high-yield") {
       // Unsolved top 25 highest frequency
       list = list
-        .filter(p => {
+        .filter((p) => {
           const u = getProblemUserData(p.id);
-          return u.status === 'unsolved';
+          return u.status === "unsolved";
         })
         .sort((a, b) => b.frequency - a.frequency)
         .slice(0, 25);
-    } else if (presetFilter === 'needs-revision') {
-      list = list.filter(p => {
+    } else if (presetFilter === "needs-revision") {
+      list = list.filter((p) => {
         const u = getProblemUserData(p.id);
-        if (u.status === 'revision') return true;
+        if (u.status === "revision") return true;
         // Or solved > 7 days ago
-        if (u.status === 'solved' && u.solvedAt) {
+        if (u.status === "solved" && u.solvedAt) {
           const diffDays = (Date.now() - u.solvedAt) / (1000 * 3600 * 24);
           return diffDays >= 7;
         }
         return false;
       });
-    } else if (presetFilter === 'bookmarked') {
-      list = list.filter(p => getProblemUserData(p.id).bookmarked);
-    } else if (presetFilter === 'unsolved') {
-      list = list.filter(p => getProblemUserData(p.id).status === 'unsolved');
+    } else if (presetFilter === "bookmarked") {
+      list = list.filter((p) => getProblemUserData(p.id).bookmarked);
+    } else if (presetFilter === "unsolved") {
+      list = list.filter((p) => getProblemUserData(p.id).status === "unsolved");
     }
 
     // Difficulty filter
-    if (selectedDifficulty !== 'ALL') {
-      list = list.filter(p => p.difficulty === selectedDifficulty);
+    if (selectedDifficulty !== "ALL") {
+      list = list.filter((p) => p.difficulty === selectedDifficulty);
     }
 
     // Topic filter
     if (selectedTopic) {
-      list = list.filter(p => p.topics.includes(selectedTopic));
+      list = list.filter((p) => p.topics.includes(selectedTopic));
     }
 
     // Search query filter
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase().trim();
       list = list.filter(
-        p =>
+        (p) =>
           p.title.toLowerCase().includes(q) ||
           p.id.toLowerCase().includes(q) ||
-          p.topics.some(t => t.toLowerCase().includes(q))
+          p.topics.some((t) => t.toLowerCase().includes(q)),
       );
     }
 
     // Sorting
     list.sort((a, b) => {
       let comparison = 0;
-      if (sortColumn === 'frequency') {
+      if (sortColumn === "frequency") {
         comparison = a.frequency - b.frequency;
-      } else if (sortColumn === 'acceptanceRate') {
+      } else if (sortColumn === "acceptanceRate") {
         comparison = a.acceptanceRate - b.acceptanceRate;
-      } else if (sortColumn === 'difficulty') {
-        comparison = difficultyRank[a.difficulty] - difficultyRank[b.difficulty];
-      } else if (sortColumn === 'status') {
+      } else if (sortColumn === "difficulty") {
+        comparison =
+          difficultyRank[a.difficulty] - difficultyRank[b.difficulty];
+      } else if (sortColumn === "status") {
         const uA = getProblemUserData(a.id).status;
         const uB = getProblemUserData(b.id).status;
         comparison = statusRank[uA] - statusRank[uB];
-      } else if (sortColumn === 'title') {
+      } else if (sortColumn === "title") {
         comparison = a.title.localeCompare(b.title);
       }
-      return sortDirection === 'asc' ? comparison : -comparison;
+      return sortDirection === "asc" ? comparison : -comparison;
     });
 
     return list;
@@ -174,7 +180,14 @@ export const ProblemTable: React.FC = () => {
   // Reset page when filters change
   React.useEffect(() => {
     setCurrentPage(1);
-  }, [presetFilter, selectedDifficulty, selectedTopic, searchQuery, activeTimeframe, activeCompanyData]);
+  }, [
+    presetFilter,
+    selectedDifficulty,
+    selectedTopic,
+    searchQuery,
+    activeTimeframe,
+    activeCompanyData,
+  ]);
 
   // Paginated slice
   const totalItems = filteredProblems.length;
@@ -186,18 +199,20 @@ export const ProblemTable: React.FC = () => {
 
   const handleSort = (column: SortColumn) => {
     if (sortColumn === column) {
-      setSortDirection(prev => (prev === 'asc' ? 'desc' : 'asc'));
+      setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
     } else {
       setSortColumn(column);
-      setSortDirection('desc');
+      setSortDirection("desc");
     }
   };
 
   const getSortIcon = (column: SortColumn) => {
     if (sortColumn !== column) {
-      return <ArrowUpDown className="h-3 w-3 text-zinc-600 group-hover:text-zinc-400" />;
+      return (
+        <ArrowUpDown className="h-3 w-3 text-zinc-600 group-hover:text-zinc-400" />
+      );
     }
-    return sortDirection === 'asc' ? (
+    return sortDirection === "asc" ? (
       <ArrowUp className="h-3 w-3 text-violet-400" />
     ) : (
       <ArrowDown className="h-3 w-3 text-violet-400" />
@@ -210,22 +225,25 @@ export const ProblemTable: React.FC = () => {
     const status = u.status;
 
     let icon = <Circle className="h-4 w-4 text-zinc-600 hover:text-zinc-400" />;
-    let tooltip = 'Status: Unsolved (Click to cycle: Solved -> Attempted -> Revision)';
+    let tooltip =
+      "Status: Unsolved (Click to cycle: Solved -> Attempted -> Revision)";
 
-    if (status === 'solved') {
-      icon = <CheckCircle2 className="h-4 w-4 text-emerald-400 fill-emerald-500/20" />;
-      tooltip = 'Status: Solved (Click to mark Attempted)';
-    } else if (status === 'attempted') {
+    if (status === "solved") {
+      icon = (
+        <CheckCircle2 className="h-4 w-4 text-emerald-400 fill-emerald-500/20" />
+      );
+      tooltip = "Status: Solved (Click to mark Attempted)";
+    } else if (status === "attempted") {
       icon = <CircleDot className="h-4 w-4 text-amber-400 fill-amber-500/20" />;
-      tooltip = 'Status: Attempted (Click to mark Needs Revision)';
-    } else if (status === 'revision') {
+      tooltip = "Status: Attempted (Click to mark Needs Revision)";
+    } else if (status === "revision") {
       icon = <Flag className="h-4 w-4 text-purple-400 fill-purple-500/20" />;
-      tooltip = 'Status: Needs Revision (Click to reset Unsolved)';
+      tooltip = "Status: Needs Revision (Click to reset Unsolved)";
     }
 
     return (
       <button
-        onClick={e => {
+        onClick={(e) => {
           e.stopPropagation();
           cycleProblemStatus(problem);
         }}
@@ -242,12 +260,12 @@ export const ProblemTable: React.FC = () => {
       {/* Table Action Header: Summary & Pick Random */}
       <div className="flex items-center justify-between text-xs px-1 text-zinc-400">
         <div>
-          Showing{' '}
+          Showing{" "}
           <strong className="text-zinc-200 dark:text-zinc-200 light:text-zinc-800">
             {totalItems}
-          </strong>{' '}
-          {totalItems === 1 ? 'question' : 'questions'}
-          {presetFilter === 'high-yield' && (
+          </strong>{" "}
+          {totalItems === 1 ? "question" : "questions"}
+          {presetFilter === "high-yield" && (
             <span className="text-amber-400 ml-2 font-mono">
               ⚡ High-Yield Sprint Active
             </span>
@@ -270,19 +288,19 @@ export const ProblemTable: React.FC = () => {
 
       {/* Main Table Surface */}
       <div className="rounded-xl border border-zinc-800/90 dark:border-zinc-800/90 light:border-zinc-200 bg-[#0d0d10] dark:bg-[#0d0d10] light:bg-white overflow-hidden shadow-sm">
-        <div className="overflow-x-auto custom-scrollbar">
-          <table className="w-full text-left text-xs border-collapse">
+        <div className="h-[55vh] overflow-auto custom-scrollbar">
+          <table className="w-full text-left text-xs border-collapse [&_th]:sticky [&_th]:top-0 [&_th]:z-10 [&_th]:bg-zinc-950 dark:[&_th]:bg-zinc-950 light:[&_th]:bg-zinc-50">
             {/* Table Header */}
             <thead>
               <tr className="border-b border-zinc-800 dark:border-zinc-800 light:border-zinc-200 bg-zinc-950/60 dark:bg-zinc-950/60 light:bg-zinc-50 text-zinc-400 select-none">
                 <th className="py-2.5 px-3 w-10 text-center">
                   <button
-                    onClick={() => handleSort('status')}
+                    onClick={() => handleSort("status")}
                     className="flex items-center justify-center gap-1 group mx-auto cursor-pointer"
                     title="Sort by Status"
                   >
                     <span>#</span>
-                    {getSortIcon('status')}
+                    {getSortIcon("status")}
                   </button>
                 </th>
 
@@ -290,41 +308,41 @@ export const ProblemTable: React.FC = () => {
 
                 <th className="py-2.5 px-3 min-w-[280px]">
                   <button
-                    onClick={() => handleSort('title')}
+                    onClick={() => handleSort("title")}
                     className="flex items-center gap-1.5 font-medium group cursor-pointer text-zinc-300 dark:text-zinc-300 light:text-zinc-700"
                   >
                     <span>Problem Title</span>
-                    {getSortIcon('title')}
+                    {getSortIcon("title")}
                   </button>
                 </th>
 
                 <th className="py-2.5 px-3 w-28">
                   <button
-                    onClick={() => handleSort('difficulty')}
+                    onClick={() => handleSort("difficulty")}
                     className="flex items-center gap-1.5 font-medium group cursor-pointer text-zinc-300 dark:text-zinc-300 light:text-zinc-700"
                   >
                     <span>Difficulty</span>
-                    {getSortIcon('difficulty')}
+                    {getSortIcon("difficulty")}
                   </button>
                 </th>
 
                 <th className="py-2.5 px-3 w-36">
                   <button
-                    onClick={() => handleSort('frequency')}
+                    onClick={() => handleSort("frequency")}
                     className="flex items-center gap-1.5 font-medium group cursor-pointer text-zinc-300 dark:text-zinc-300 light:text-zinc-700"
                   >
                     <span>Frequency</span>
-                    {getSortIcon('frequency')}
+                    {getSortIcon("frequency")}
                   </button>
                 </th>
 
                 <th className="py-2.5 px-3 w-28">
                   <button
-                    onClick={() => handleSort('acceptanceRate')}
+                    onClick={() => handleSort("acceptanceRate")}
                     className="flex items-center gap-1.5 font-medium group cursor-pointer text-zinc-300 dark:text-zinc-300 light:text-zinc-700"
                   >
                     <span>Acceptance</span>
-                    {getSortIcon('acceptanceRate')}
+                    {getSortIcon("acceptanceRate")}
                   </button>
                 </th>
 
@@ -335,13 +353,15 @@ export const ProblemTable: React.FC = () => {
             </thead>
 
             {/* Table Body */}
-            <tbody className="divide-y divide-zinc-800/60 dark:divide-zinc-800/60 light:divide-zinc-200">
+            <tbody className="divide-y divide-zinc-800/60 dark:divide-zinc-800/60 light:divide-zinc-200 ">
               {paginatedProblems.length === 0 ? (
                 <tr>
                   <td colSpan={8} className="py-16 text-center text-zinc-500">
                     <div className="flex flex-col items-center justify-center gap-2">
                       <Inbox className="h-8 w-8 text-zinc-600" />
-                      <p className="text-sm font-medium">No problems matching current filters</p>
+                      <p className="text-sm font-medium">
+                        No problems matching current filters
+                      </p>
                       <p className="text-xs text-zinc-500">
                         Try clearing active filters or switching timeframes
                       </p>
@@ -366,19 +386,21 @@ export const ProblemTable: React.FC = () => {
                       {/* Bookmark Star */}
                       <td className="py-2.5 px-2 text-center">
                         <button
-                          onClick={e => {
+                          onClick={(e) => {
                             e.stopPropagation();
                             toggleBookmark(problem.id);
                           }}
                           className="p-1 rounded hover:bg-zinc-800 transition-colors cursor-pointer"
-                          title={u.bookmarked ? 'Remove Bookmark' : 'Add Bookmark'}
+                          title={
+                            u.bookmarked ? "Remove Bookmark" : "Add Bookmark"
+                          }
                         >
                           <Star
                             className={cn(
-                              'h-3.5 w-3.5 transition-colors',
+                              "h-3.5 w-3.5 transition-colors",
                               u.bookmarked
-                                ? 'text-yellow-400 fill-yellow-400'
-                                : 'text-zinc-600 hover:text-zinc-400'
+                                ? "text-yellow-400 fill-yellow-400"
+                                : "text-zinc-600 hover:text-zinc-400",
                             )}
                           />
                         </button>
@@ -398,13 +420,14 @@ export const ProblemTable: React.FC = () => {
                           </a>
 
                           {/* Cross Company Badge Popover */}
-                          {problem.otherCompaniesCount > 0 && activeCompanyData && (
-                            <CrossCompanyPopover
-                              problemId={problem.id}
-                              currentCompanySlug={activeCompanyData.slug}
-                              count={problem.otherCompaniesCount}
-                            />
-                          )}
+                          {problem.otherCompaniesCount > 0 &&
+                            activeCompanyData && (
+                              <CrossCompanyPopover
+                                problemId={problem.id}
+                                currentCompanySlug={activeCompanyData.slug}
+                                count={problem.otherCompaniesCount}
+                              />
+                            )}
                         </div>
                       </td>
 
@@ -412,8 +435,8 @@ export const ProblemTable: React.FC = () => {
                       <td className="py-2.5 px-3">
                         <span
                           className={cn(
-                            'inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium border uppercase tracking-wider',
-                            diffConfig.badgeClass
+                            "inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium border uppercase tracking-wider",
+                            diffConfig.badgeClass,
                           )}
                         >
                           {problem.difficulty}
@@ -437,7 +460,7 @@ export const ProblemTable: React.FC = () => {
                         {blindMode ? (
                           <div className="group/spoiler relative inline-block">
                             <div className="filter blur-sm select-none opacity-40 group-hover/spoiler:blur-none group-hover/spoiler:opacity-100 transition-all flex flex-wrap gap-1">
-                              {problem.topics.slice(0, 3).map(topic => (
+                              {problem.topics.slice(0, 3).map((topic) => (
                                 <span
                                   key={topic}
                                   className="px-1.5 py-0.5 rounded text-[10px] bg-zinc-800/80 text-zinc-400 border border-zinc-700/50"
@@ -452,7 +475,7 @@ export const ProblemTable: React.FC = () => {
                           </div>
                         ) : (
                           <div className="flex flex-wrap gap-1 max-w-xs">
-                            {problem.topics.slice(0, 3).map(topic => (
+                            {problem.topics.slice(0, 3).map((topic) => (
                               <span
                                 key={topic}
                                 className="px-1.5 py-0.5 rounded text-[10px] bg-zinc-800/80 dark:bg-zinc-800/80 light:bg-zinc-200 text-zinc-400 dark:text-zinc-400 light:text-zinc-700 border border-zinc-700/50 dark:border-zinc-700/50 light:border-zinc-300 whitespace-nowrap"
@@ -474,7 +497,7 @@ export const ProblemTable: React.FC = () => {
                         <div className="flex items-center justify-end gap-1">
                           {/* Timer Button */}
                           <button
-                            onClick={e => {
+                            onClick={(e) => {
                               e.stopPropagation();
                               startTimer(problem);
                             }}
@@ -486,15 +509,15 @@ export const ProblemTable: React.FC = () => {
 
                           {/* Notes Drawer Button */}
                           <button
-                            onClick={e => {
+                            onClick={(e) => {
                               e.stopPropagation();
                               openDrawer(problem);
                             }}
                             className={cn(
-                              'p-1.5 rounded-lg hover:bg-zinc-800 transition-colors cursor-pointer',
+                              "p-1.5 rounded-lg hover:bg-zinc-800 transition-colors cursor-pointer",
                               u.notes || u.intuition
-                                ? 'text-violet-400'
-                                : 'text-zinc-400 hover:text-zinc-200'
+                                ? "text-violet-400"
+                                : "text-zinc-400 hover:text-zinc-200",
                             )}
                             title="Open Revision Notes & Intuition"
                           >
@@ -517,7 +540,7 @@ export const ProblemTable: React.FC = () => {
               <span>Rows per page:</span>
               <select
                 value={pageSize}
-                onChange={e => {
+                onChange={(e) => {
                   setPageSize(Number(e.target.value));
                   setCurrentPage(1);
                 }}
@@ -536,7 +559,9 @@ export const ProblemTable: React.FC = () => {
               </span>
               <div className="flex items-center gap-1">
                 <button
-                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.max(1, prev - 1))
+                  }
                   disabled={currentPage === 1}
                   className="p-1 rounded hover:bg-zinc-800 disabled:opacity-30 disabled:hover:bg-transparent transition-colors cursor-pointer"
                   title="Previous page"
@@ -544,7 +569,9 @@ export const ProblemTable: React.FC = () => {
                   <ChevronLeft className="h-4 w-4" />
                 </button>
                 <button
-                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+                  }
                   disabled={currentPage >= totalPages}
                   className="p-1 rounded hover:bg-zinc-800 disabled:opacity-30 disabled:hover:bg-transparent transition-colors cursor-pointer"
                   title="Next page"

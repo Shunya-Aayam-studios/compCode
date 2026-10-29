@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import React, { useState, useMemo } from 'react';
-import { useApp } from '@/context/AppContext';
-import { CompanyManifestItem } from '@/types';
+import React, { useState, useMemo } from "react";
+import { useApp } from "@/context/AppContext";
+import { CompanyManifestItem } from "@/types";
 import {
   Search,
   Pin,
@@ -12,8 +12,8 @@ import {
   Target,
   Sparkles,
   Trophy,
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
+} from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export const Sidebar: React.FC = () => {
   const {
@@ -26,30 +26,30 @@ export const Sidebar: React.FC = () => {
     getCompanyStats,
   } = useApp();
 
-  const [companySearch, setCompanySearch] = useState('');
-  const [filterMode, setFilterMode] = useState<'all' | 'top'>('all');
+  const [companySearch, setCompanySearch] = useState("");
+  const [filterMode, setFilterMode] = useState<"all" | "top">("all");
 
   const allCompanies = manifest?.companies || [];
 
   // Pinned companies list
   const pinnedCompanies = useMemo(() => {
     return userStore.pinnedCompanies
-      .map(slug => allCompanies.find(c => c.slug === slug))
+      .map((slug) => allCompanies.find((c) => c.slug === slug))
       .filter((c): c is CompanyManifestItem => Boolean(c));
   }, [userStore.pinnedCompanies, allCompanies]);
 
   // Filtered companies
   const filteredCompanies = useMemo(() => {
     let list = allCompanies;
-    if (filterMode === 'top') {
+    if (filterMode === "top") {
       list = list.slice(0, 30);
     }
     if (!companySearch.trim()) return list;
     const query = companySearch.toLowerCase().trim();
     return list.filter(
-      c =>
+      (c) =>
         c.name.toLowerCase().includes(query) ||
-        c.slug.toLowerCase().includes(query)
+        c.slug.toLowerCase().includes(query),
     );
   }, [allCompanies, companySearch, filterMode]);
 
@@ -73,7 +73,7 @@ export const Sidebar: React.FC = () => {
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-1.5">
-            {pinnedCompanies.map(comp => {
+            {pinnedCompanies.map((comp) => {
               const isActive = comp.slug === activeCompanySlug;
               const stats = getCompanyStats(comp);
               const radius = 10;
@@ -86,10 +86,10 @@ export const Sidebar: React.FC = () => {
                   key={comp.slug}
                   onClick={() => selectCompany(comp.slug)}
                   className={cn(
-                    'group relative flex items-center justify-between p-2 rounded-lg border text-left cursor-pointer transition-all',
+                    "group relative flex items-center justify-between p-2 rounded-lg border text-left cursor-pointer transition-all",
                     isActive
-                      ? 'bg-violet-500/10 border-violet-500/40 text-white shadow-sm shadow-violet-500/10'
-                      : 'bg-zinc-900/60 dark:bg-zinc-900/60 light:bg-white border-zinc-800 dark:border-zinc-800 light:border-zinc-200 hover:border-zinc-700 hover:bg-zinc-900 text-zinc-300'
+                      ? "bg-violet-500/10 border-violet-500/40 text-white shadow-sm shadow-violet-500/10"
+                      : "bg-zinc-900/60 dark:bg-zinc-900/60 light:bg-white border-zinc-800 dark:border-zinc-800 light:border-zinc-200 hover:border-zinc-700 hover:bg-zinc-900 text-zinc-300",
                   )}
                 >
                   <div className="flex items-center gap-2 min-w-0 pr-1">
@@ -135,7 +135,7 @@ export const Sidebar: React.FC = () => {
 
                   {/* Unpin button on hover */}
                   <button
-                    onClick={e => {
+                    onClick={(e) => {
                       e.stopPropagation();
                       togglePinCompany(comp.slug);
                     }}
@@ -158,13 +158,13 @@ export const Sidebar: React.FC = () => {
           <input
             type="text"
             value={companySearch}
-            onChange={e => setCompanySearch(e.target.value)}
+            onChange={(e) => setCompanySearch(e.target.value)}
             placeholder="Filter 470 companies..."
             className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-zinc-800 dark:border-zinc-800 light:border-zinc-300 bg-zinc-900/60 dark:bg-zinc-900/60 light:bg-white text-zinc-200 dark:text-zinc-200 light:text-zinc-800 placeholder-zinc-500 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-colors"
           />
           {companySearch && (
             <button
-              onClick={() => setCompanySearch('')}
+              onClick={() => setCompanySearch("")}
               className="absolute right-2.5 top-2 text-[10px] text-zinc-400 hover:text-zinc-200"
             >
               clear
@@ -176,23 +176,23 @@ export const Sidebar: React.FC = () => {
           <span>{filteredCompanies.length} companies</span>
           <div className="flex items-center gap-1">
             <button
-              onClick={() => setFilterMode('all')}
+              onClick={() => setFilterMode("all")}
               className={cn(
-                'px-1.5 py-0.5 rounded transition-colors',
-                filterMode === 'all'
-                  ? 'bg-zinc-800 text-zinc-200 font-medium'
-                  : 'text-zinc-500 hover:text-zinc-300'
+                "px-1.5 py-0.5 rounded transition-colors",
+                filterMode === "all"
+                  ? "bg-zinc-800 text-zinc-200 font-medium"
+                  : "text-zinc-500 hover:text-zinc-300",
               )}
             >
               All
             </button>
             <button
-              onClick={() => setFilterMode('top')}
+              onClick={() => setFilterMode("top")}
               className={cn(
-                'px-1.5 py-0.5 rounded transition-colors',
-                filterMode === 'top'
-                  ? 'bg-zinc-800 text-zinc-200 font-medium'
-                  : 'text-zinc-500 hover:text-zinc-300'
+                "px-1.5 py-0.5 rounded transition-colors",
+                filterMode === "top"
+                  ? "bg-zinc-800 text-zinc-200 font-medium"
+                  : "text-zinc-500 hover:text-zinc-300",
               )}
             >
               Top 30
@@ -208,7 +208,7 @@ export const Sidebar: React.FC = () => {
             No companies matching &quot;{companySearch}&quot;
           </div>
         ) : (
-          filteredCompanies.map(comp => {
+          filteredCompanies.map((comp) => {
             const isActive = comp.slug === activeCompanySlug;
             const isPinned = isCompanyPinned(comp.slug);
 
@@ -217,19 +217,24 @@ export const Sidebar: React.FC = () => {
                 key={comp.slug}
                 onClick={() => selectCompany(comp.slug)}
                 className={cn(
-                  'group flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs cursor-pointer transition-colors',
-                  isActive
-                    ? 'bg-violet-600/15 text-violet-300 font-medium border border-violet-500/30'
-                    : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/60 dark:hover:bg-zinc-900/60 light:hover:bg-zinc-100 border border-transparent'
+                  "group flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs cursor-pointer transition-colors",
+
+                  comp.totalUniqueQuestions === 0
+                    ? "opacity-50  pointer-events-none"
+                    : isActive
+                      ? "bg-violet-600/15 text-violet-300 font-medium border border-violet-500/30"
+                      : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/60 dark:hover:bg-zinc-900/60 light:hover:bg-zinc-100 border border-transparent",
                 )}
               >
                 <div className="flex items-center gap-2 truncate pr-1">
                   <div
                     className={cn(
-                      'flex-shrink-0 w-5 h-5 rounded flex items-center justify-center text-[10px] font-bold uppercase font-mono',
-                      isActive
-                        ? 'bg-violet-500 text-white'
-                        : 'bg-zinc-800 text-zinc-400 group-hover:bg-zinc-700 group-hover:text-zinc-200'
+                      "flex-shrink-0 w-5 h-5 rounded flex items-center justify-center text-[10px] font-bold uppercase font-mono",
+                      comp.totalUniqueQuestions === 0
+                        ? "opacity-50"
+                        : isActive
+                          ? "bg-violet-500 text-white"
+                          : "bg-zinc-800 text-zinc-400 group-hover:bg-zinc-700 group-hover:text-zinc-200",
                     )}
                   >
                     {comp.name.charAt(0)}
@@ -244,16 +249,16 @@ export const Sidebar: React.FC = () => {
 
                   {/* Pin button */}
                   <button
-                    onClick={e => {
+                    onClick={(e) => {
                       e.stopPropagation();
                       togglePinCompany(comp.slug);
                     }}
-                    title={isPinned ? 'Unpin' : 'Pin to Targets'}
+                    title={isPinned ? "Unpin" : "Pin to Targets"}
                     className={cn(
-                      'p-1 rounded transition-colors',
+                      "p-1 rounded transition-colors",
                       isPinned
-                        ? 'text-violet-400 opacity-100'
-                        : 'opacity-0 group-hover:opacity-100 text-zinc-500 hover:text-zinc-300'
+                        ? "text-violet-400 opacity-100"
+                        : "opacity-0 group-hover:opacity-100 text-zinc-500 hover:text-zinc-300",
                     )}
                   >
                     <Pin className="h-3 w-3" />

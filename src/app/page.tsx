@@ -1,27 +1,27 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { AppProvider, useApp } from '@/context/AppContext';
-import { Navbar } from '@/components/Navbar';
-import { Sidebar } from '@/components/Sidebar';
-import { CompanyHeader } from '@/components/CompanyHeader';
-import { TimeframeSwitcher } from '@/components/TimeframeSwitcher';
-import { SmartPresetsBar } from '@/components/SmartPresetsBar';
-import { ProblemTable } from '@/components/ProblemTable';
-import { MockInterviewTimer } from '@/components/MockInterviewTimer';
-import { RevisionDrawer } from '@/components/RevisionDrawer';
-import { CommandPalette } from '@/components/CommandPalette';
-import { MultiCompanyOverlapModal } from '@/components/MultiCompanyOverlapModal';
-import { ImportExportModal } from '@/components/ImportExportModal';
+import React from "react";
+import { AppProvider, useApp } from "@/context/AppContext";
+import { Navbar } from "@/components/Navbar";
+import { Sidebar } from "@/components/Sidebar";
+import { CompanyHeader } from "@/components/CompanyHeader";
+import { TimeframeSwitcher } from "@/components/TimeframeSwitcher";
+import { SmartPresetsBar } from "@/components/SmartPresetsBar";
+import { ProblemTable } from "@/components/ProblemTable";
+import { MockInterviewTimer } from "@/components/MockInterviewTimer";
+import { RevisionDrawer } from "@/components/RevisionDrawer";
+import { CommandPalette } from "@/components/CommandPalette";
+import { MultiCompanyOverlapModal } from "@/components/MultiCompanyOverlapModal";
+import { ImportExportModal } from "@/components/ImportExportModal";
 
 function MainWorkspace() {
   const { isLoadingManifest, isLoadingCompany } = useApp();
 
   return (
-    <div className="flex-1 flex flex-col min-h-0 bg-[#09090b] dark:bg-[#09090b] light:bg-zinc-50">
+    <div className="flex-1 flex max-h-screen w-full flex-col min-h-0 bg-[#09090b] dark:bg-[#09090b] light:bg-zinc-50">
       <Navbar />
 
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 w-full flex overflow-hidden">
         {/* Left Sidebar */}
         <Sidebar />
 
@@ -31,7 +31,7 @@ function MainWorkspace() {
             <div className="flex-1 flex items-center justify-center py-24 text-zinc-500 text-sm">
               <div className="flex flex-col items-center gap-3">
                 <div className="w-8 h-8 rounded-full border-2 border-violet-500 border-t-transparent animate-spin" />
-                <span>Loading DSA Orbit local indexes...</span>
+                <span>Loading Comp Code local indexes...</span>
               </div>
             </div>
           ) : (
@@ -51,6 +51,30 @@ function MainWorkspace() {
 
                 {/* Main Problem Table */}
                 <ProblemTable />
+                {/* Footer and credit to soyo-kaze and link to github*/}
+                <footer className="text-center text-xs text-zinc-500 dark:text-zinc-400 light:text-zinc-600">
+                  <p>
+                    Created with ❤️ by{" "}
+                    <a
+                      href="https://github.com/soyo-kaze"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-violet-400 hover:underline"
+                    >
+                      soyo-kaze
+                    </a>
+                    . Contribute on{" "}
+                    <a
+                      href="https://github.com/Shunya-Aayam-studios/compCode"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-violet-400 hover:underline"
+                    >
+                      GitHub
+                    </a>
+                    .
+                  </p>
+                </footer>
               </div>
             </div>
           )}

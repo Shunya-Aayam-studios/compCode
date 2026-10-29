@@ -1,10 +1,10 @@
-import type { Metadata } from 'next';
-import './globals.css';
+import type { Metadata } from "next";
+import "./globals.css";
 
 export const metadata: Metadata = {
-  title: 'DSA Orbit — Company-Wise LeetCode Preparation Dashboard',
+  title: "Comp Code — Company-Wise LeetCode Preparation Dashboard",
   description:
-    'Interactive, high-performance company-wise LeetCode preparation dashboard with local frequency metrics, mock interview timer, and cross-company overlap radar.',
+    "Interactive, high-performance company-wise LeetCode preparation dashboard with local frequency metrics, mock interview timer, and cross-company overlap radar.",
 };
 
 export default function RootLayout({

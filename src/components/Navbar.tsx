@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { useApp } from '@/context/AppContext';
+import React from "react";
+import { useApp } from "@/context/AppContext";
 import {
   Orbit,
   Flame,
@@ -13,7 +13,7 @@ import {
   Moon,
   CheckCircle2,
   Sparkles,
-} from 'lucide-react';
+} from "lucide-react";
 
 export const Navbar: React.FC = () => {
   const {
@@ -31,7 +31,7 @@ export const Navbar: React.FC = () => {
 
   // Calculate total solved
   const totalSolved = Object.values(userStore.problems).filter(
-    p => p.status === 'solved'
+    (p) => p.status === "solved",
   ).length;
 
   const handlePickRandom = () => {
@@ -54,10 +54,10 @@ export const Navbar: React.FC = () => {
             <div className="flex flex-col">
               <div className="flex items-center gap-1.5">
                 <span className="font-bold tracking-tight text-white dark:text-white light:text-zinc-900 text-base">
-                  DSA Orbit
+                  Comp Code
                 </span>
                 <span className="rounded bg-violet-500/10 px-1.5 py-0.5 text-[10px] font-semibold text-violet-400 border border-violet-500/20">
-                  PREP
+                  BETA
                 </span>
               </div>
             </div>
@@ -67,14 +67,18 @@ export const Navbar: React.FC = () => {
             <span className="flex items-center gap-1 font-mono">
               <span className="text-zinc-200 dark:text-zinc-200 light:text-zinc-700 font-semibold">
                 {manifest ? manifest.totalCompanies : 470}
-              </span>{' '}
+              </span>{" "}
               Companies
             </span>
-            <span className="text-zinc-700 dark:text-zinc-700 light:text-zinc-300">•</span>
+            <span className="text-zinc-700 dark:text-zinc-700 light:text-zinc-300">
+              •
+            </span>
             <span className="flex items-center gap-1 font-mono">
               <span className="text-zinc-200 dark:text-zinc-200 light:text-zinc-700 font-semibold">
-                {manifest ? manifest.totalUniqueProblems.toLocaleString() : '3,396'}
-              </span>{' '}
+                {manifest
+                  ? manifest.totalUniqueProblems.toLocaleString()
+                  : "3,396"}
+              </span>{" "}
               Problems
             </span>
           </div>
@@ -151,10 +155,12 @@ export const Navbar: React.FC = () => {
           <button
             onClick={toggleTheme}
             className="p-1.5 rounded-lg border border-zinc-800 dark:border-zinc-800 light:border-zinc-200 bg-zinc-900/60 dark:bg-zinc-900/60 light:bg-zinc-100 hover:border-zinc-700 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 dark:hover:text-zinc-200 light:hover:text-zinc-800 text-xs transition-colors cursor-pointer"
-            title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            title={
+              theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"
+            }
             aria-label="Toggle theme"
           >
-            {theme === 'dark' ? (
+            {theme === "dark" ? (
               <Sun className="h-4 w-4 text-amber-400" />
             ) : (
               <Moon className="h-4 w-4 text-violet-600" />
